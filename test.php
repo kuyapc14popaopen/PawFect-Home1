@@ -20,7 +20,7 @@
             <input type="password" name="password" id="password">
         </div>
         <section>
-            <button type="submit">Login</button>
+            <button type="enter">Login</button>
             <a href="register.php">Register</a>
             
         </section>
