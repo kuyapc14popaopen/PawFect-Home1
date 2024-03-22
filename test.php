@@ -21,6 +21,7 @@
         <section>
             <button type="submit">Login</button>
             <a href="register.php">Register</a>
+            
         </section>
     </form>
 </main>
