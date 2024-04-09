@@ -168,7 +168,7 @@ $(function () {
     chart: {
       id: "sparkline3",
       type: "area",
-      height: 60,
+      height: 55,
       sparkline: {
         enabled: true,
       },
