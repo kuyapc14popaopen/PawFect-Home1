@@ -1,4 +1,10 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
             <div class="signup login">
                 
                     <div class="col-lg-6 col-sm-6 col-lg-offset-3 col-sm-offset-3 col-xs-12">
@@ -35,6 +41,11 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" name="state" placeholder="State" required="true">
                             </div>
+                                        <div class="form-group center">
+                        <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter OTP" required="true">
+                        <button type="button" class="btn btn-default" id="sendOtp">Send OTP</button>
+                        <p class="otp-invalid" style="text-align: center; color: red;"></p>
+                    </div>
                             <div class="form-group center">
                                 <input type="submit" class="btn " value="Sign Up">
                             </div>
@@ -44,44 +55,89 @@
                         </div>
                     </div>
                
-                <script>
-                $('#signUpForm').submit(function (e) {
-                    
-                    e.preventDefault();
-                    
-                    const formData = new FormData(this);
-                    
-                    if($('.pass').val()!== $('.confirm-pass').val() )
-                    {
-                        $('.confirm-pass-invalid').empty();
-                        $('.confirm-pass-invalid').append("Password doesn't match.")
-                        return;
-                    }
-                    else
-                    {
-                        $('.confirm-pass-invalid').empty();
-                    }
-                     $.ajax({
-                        url:'user_registration_script.php',
-                        method: 'POST',
-                        data: formData,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                              switch(data)
-                              {
-                                  case '1' :window.location.replace('index.php'); break;
-                                  default:  $('.signup_fail').empty();$('.signup_fail').append(data);
-                              }
+               <script>
+    let generatedOtp = '';
 
+    $('#sendOtp').click(function() {
+        const email = $('#email').val();
+        if(email === '') {
+            $('.otp-invalid').empty().append("Please enter your email first.");
+            return;
+        }
 
-                          },
-                        error(data) {
-                          console.log(data);
-                        },
-                    });
-                });
-            </script>
-            </div>
+        generatedOtp = generateOTP();
+
+        $.ajax({
+            url: 'send_otp.php',
+            method: 'POST',
+            data: { email: email, otp: generatedOtp },
+            success: function(data) {
+                if(data === "OTP sent successfully.") {
+                    $('.otp-invalid').empty().append("OTP sent to your email.");
+                } else {
+                    $('.otp-invalid').empty().append(data);
+                }
+            },
+            error: function(error) {
+                $('.otp-invalid').empty().append("Failed to send OTP. Please try again.");
+            }
+        });
+    });
+
+    function generateOTP() {
+        const digits = '0123456789';
+        let otp = '';
+        for(let i=0; i<6; i++) {
+            otp += digits[Math.floor(Math.random() * 10)];
+        }
+        return otp;
+    }
+
+    $('#signUpForm').submit(function (e) {
+        e.preventDefault();
+
+        const enteredOtp = $('#otp').val();
+
+        if(enteredOtp !== generatedOtp) {
+            $('.otp-invalid').empty().append("Invalid OTP.");
+            return;
+        } else {
+            $('.otp-invalid').empty();
+        }
+
+        if($('.pass').val() !== $('.confirm-pass').val()) {
+            $('.confirm-pass-invalid').empty().append("Password doesn't match.");
+            return;
+        } else {
+            $('.confirm-pass-invalid').empty();
+        }
+
+        const formData = new FormData(this);
+        
+        $.ajax({
+            url: 'user_registration_script.php',
+            method: 'POST',
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                switch(data) {
+                    case '1':
+                        window.location.replace('index.php');
+                        break;
+                    default:
+                        $('.signup_fail').empty().append(data);
+                        break;
+                }
+            },
+            error: function(error) {
+                $('.signup_fail').empty().append("An error occurred. Please try again.");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
             
