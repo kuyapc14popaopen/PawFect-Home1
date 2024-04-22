@@ -1,13 +1,32 @@
 <?php
+// Check if the user is authenticated as an admin, if not, redirect to login page
+session_start();
+
+// Check if the necessary session variables are set
+if (!isset($_SESSION['email']) || !isset($_SESSION['id']) || !isset($_SESSION['is_admin'])) {
+    header("Location: ../login_submit.php");
+    exit();
+}
+
+// Check if the user is authenticated as an admin
+if ($_SESSION['is_admin'] == 1) {
+    // User is an admin, allow access to admin dashboard
+    $_SESSION['authenticated'] = true;
+} else {
+    // Redirect normal users to regular dashboard or homepage
+    header("Location: ../login_submit.php"); // Redirect to login page for non-admin users
+    exit();
+}
+
+
+    // Include database connection
     include '../connection.php';
 
-    // You can add PHP code here for querying data from the database if needed
-
     // Sample data for demonstration
-    $pageVisits = -20;
-    $users = 30;
-    $posts = 50;
-    $pendingPosts = 18;
+    $pageVisits = 20;
+    $users = 20;
+    $posts = 20;
+    $pendingPosts = 20;
 
 ?>
 <!DOCTYPE html>
@@ -24,7 +43,7 @@
     <title>PawfectHome</title>
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="admin/text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
@@ -43,7 +62,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="dashboard.php">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -70,7 +89,7 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pending_posts.php" data-toggle="collapse" data-target="#collapseTwo"
+                <a class="nav-link collapsed" href="/admin/pending_posts.php" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Pending Post</span>
@@ -86,19 +105,16 @@
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
+                <a class="nav-link collapsed" href="/admin/archive.php" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Archive</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
+                        <h6 class="collapse-header">Custom Components:</h6>
+                        <a class="collapse-item" href="buttons.html">Buttons</a>
+                        <a class="collapse-item" href="cards.html">Cards</a>
                     </div>
                 </div>
             </li>
@@ -145,6 +161,14 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
             </li>
+            
+                        <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:logOut();l">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Log out</span></a>
+            </li>
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -215,7 +239,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">--name--</span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>
@@ -452,21 +476,27 @@
 
 
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="admin/vendor/jquery/jquery.min.js"></script>
+    <script src="admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="admin/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="admin/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="admin/vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="admin/js/demo/chart-area-demo.js"></script>
+    <script src="admin/js/demo/chart-pie-demo.js"></script>
+    <script>    function logOut() {
+        $("#dynamic_content").css("visibility", "visible");
+        $("#dynamic_content").load("../logout.php");
+    }
+    </script>
+    
 
 </body>
 
