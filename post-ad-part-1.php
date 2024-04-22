@@ -67,6 +67,13 @@
                                     <p onclick="selectOption(this)">2</p>
                                     <p onclick="selectOption(this)">3</p>
                                     <p onclick="selectOption(this)">4</p>
+                                    <p onclick="selectOption(this)">5</p>
+                                    <p onclick="selectOption(this)">6</p>
+                                    <p onclick="selectOption(this)">7</p>
+                                    <p onclick="selectOption(this)">7</p>
+                                    <p onclick="selectOption(this)">9</p>
+                                    <p onclick="selectOption(this)">10</p>
+                                    <p onclick="selectOption(this)">11</p>
                                 </div>
                                 
                                 <div class="invalid-feedback age_empty hidden">
@@ -104,6 +111,7 @@
                                 
                                 <div class="options weight" style="height: 0px; padding: 0;">
                                     <p onclick="selectOption(this)">Unknown</p>
+                                    <p onclick="selectOption(this)">Under 1 KG</p>
                                     <p onclick="selectOption(this)">1</p>
                                     <p onclick="selectOption(this)">2</p>
                                     <p onclick="selectOption(this)">3</p>
@@ -115,6 +123,10 @@
                                     <p onclick="selectOption(this)">9</p>
                                     <p onclick="selectOption(this)">10</p>
                                     <p onclick="selectOption(this)">11</p>
+                                    <p onclick="selectOption(this)">12</p>
+                                    <p onclick="selectOption(this)">13</p>
+                                    <p onclick="selectOption(this)">14</p>
+                                    <p onclick="selectOption(this)">15</p>
                                 </div>
                                 <div class="invalid-feedback weight_empty hidden">
                                     Please select your choice.
