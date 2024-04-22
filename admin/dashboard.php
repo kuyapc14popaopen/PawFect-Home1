@@ -90,7 +90,7 @@ if ($_SESSION['is_admin'] == 1) {
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="/admin/pending_posts.php" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
+                    aria-expanded="true" aria-controls="col lapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Pending Post</span>
                 </a>
@@ -283,83 +283,143 @@ if ($_SESSION['is_admin'] == 1) {
                     <div class="row">
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Page Visits</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">-20</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        Page Visits</div>
+                    <!-- Display the number of page visits dynamically here -->
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?php
+                        require '../connection.php';
+
+                        // Query to count page visits
+                        $count_query = "SELECT COUNT(*) AS visit_count FROM pagevisits";
+                        $count_result = mysqli_query($conn, $count_query) or die(mysqli_error($conn));
+                        $row = mysqli_fetch_assoc($count_result);
+                        $visit_count = $row['visit_count'];
+
+                        echo $visit_count; // Output the visit count
+                        ?>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Users</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">30</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        Users</div>
+                    <!-- Display the number of users dynamically here -->
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?php
+                        require '../connection.php';
+
+                        // Query to count the number of users
+                        $count_query = "SELECT COUNT(*) AS user_count FROM users";
+                        $count_result = mysqli_query($conn, $count_query) or die(mysqli_error($conn));
+                        $row = mysqli_fetch_assoc($count_result);
+                        $user_count = $row['user_count'];
+
+                        echo $user_count; // Output the user count
+                        ?>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Posts
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50</div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <a href="pending_posts.php" style="text-decoration: none;">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Posts
+                    </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Posts</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $pendingPosts; ?></div>
-                        </div>
                         <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                            <!-- Display the number of posts dynamically here -->
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                <?php
+                                require '../connection.php';
+
+                                // Query to count the number of posts
+                                $count_query = "SELECT COUNT(*) AS post_count FROM confirmed_ad_info";
+                                $count_result = mysqli_query($conn, $count_query) or die(mysqli_error($conn));
+                                $row = mysqli_fetch_assoc($count_result);
+                                $post_count = $row['post_count'];
+
+                                echo $post_count; // Output the post count
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-auto">
+                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                </div>
             </div>
-        </a>
+        </div>
     </div>
+</div>
+
+
+                        <!-- Pending Requests Card Example -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <a href="pending_posts.php" style="text-decoration: none; color: inherit;">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pending Posts
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <!-- Display the number of posts dynamically here -->
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    <?php
+                                    require '../connection.php';
+
+                                    // Query to count the number of posts
+                                    $count_query = "SELECT COUNT(*) AS post_count FROM ad_info";
+                                    $count_result = mysqli_query($conn, $count_query) or die(mysqli_error($conn));
+                                    $row = mysqli_fetch_assoc($count_result);
+                                    $post_count = $row['post_count'];
+
+                                    echo $post_count; // Output the post count
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+
+
                     </div>
 
                     <!-- Content Row -->
