@@ -94,7 +94,7 @@ if (mysqli_num_rows($result) > 0) {
         $adoption_rules = $row['adoption_rules'] ? $row['adoption_rules'] : "No information available";
         $available = $row['available'] === '1' ? "Available" : "Not Available";
 ?>
-        <div class="col-sm-6 col-md-4 col-lg-3 column">
+        <div class="col-sm-6 col-md-4 col-lg-3 column" data-ad-id="<?php echo $row['ad_id']; ?>">
             <div class="card">
                 <img src="../uploads/<?php echo $row['image_url']; ?>" class="img-responsive" alt="Pet Image">
                 <div class="name_favorite_align">
@@ -167,8 +167,11 @@ if (mysqli_num_rows($result) > 0) {
                 if (response.success) {
                     console.log("Ad confirmed with ID: " + adId);
                     alert("Ad confirmed successfully!");
-                    // You might want to remove the card or update its UI here
-                    location.reload(); // Refresh the page
+                    // Remove the card from the DOM
+                    var cardToRemove = document.querySelector("[data-ad-id='" + adId + "']");
+                    if (cardToRemove) {
+                        cardToRemove.parentNode.removeChild(cardToRemove);
+                    }
                 } else {
                     console.error("Error confirming ad:", response.message);
                     alert("Error confirming ad: " + response.message);
