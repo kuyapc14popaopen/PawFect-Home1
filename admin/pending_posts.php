@@ -66,11 +66,13 @@ require '../connection.php';
 </div>
 
 <?php
-$query = "SELECT ad_images.image_url, users.name, ad_info.pet_name, ad_info.pet_category, ad_info.breed, ad_info.color, ad_info.gender, ad_info.age, ad_info.age_type, ad_info.size, ad_info.vaccinated, ad_info.neutured, ad_info.weight, ad_info.city_village, ad_info.district, ad_info.state, ad_info.description, ad_info.about_pet, ad_info.adoption_rules, ad_info.available, ad_info.ad_id
-          FROM ad_images
-          INNER JOIN ad_info ON ad_images.ad_id = ad_info.ad_id
-          INNER JOIN users ON ad_info.user_id = users.id";
-$result = mysqli_query($conn, $query);
+$sql = "SELECT ad_images.image_url, users.name, ad_info.pet_name, ad_info.pet_category, ad_info.breed, ad_info.color, ad_info.gender, ad_info.age, ad_info.age_type, ad_info.size, ad_info.vaccinated, ad_info.neutured, ad_info.weight, ad_info.city_village, ad_info.district, ad_info.state, ad_info.description, ad_info.about_pet, ad_info.adoption_rules, ad_info.available, ad_info.ad_id
+        FROM ad_images
+        INNER JOIN ad_info ON ad_images.ad_id = ad_info.ad_id
+        INNER JOIN users ON ad_info.user_id = users.id
+        WHERE ad_info.archived = FALSE"; // Add condition to select only non-archived ads
+
+$result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
@@ -113,8 +115,9 @@ if (mysqli_num_rows($result) > 0) {
                 
                 <!-- Confirm and Reject buttons -->
                 <div class="confirm-reject-btns">
-                    <button class="btn btn-success" onclick="confirmPet(<?php echo $row['ad_id']; ?>, '<?php echo $row['image_url']; ?>', '<?php echo $name; ?>', '<?php echo $pet_name; ?>', '<?php echo $breed; ?>', '<?php echo $gender; ?>', '<?php echo $pet_category; ?>', '<?php echo $color; ?>', '<?php echo $age; ?>', '<?php echo $age_type; ?>', '<?php echo $size; ?>', '<?php echo $vaccinated; ?>', '<?php echo $neutured; ?>', '<?php echo $weight; ?>')">Confirm</button>
-                    <button class="btn btn-danger" onclick="rejectPet(<?php echo $row['ad_id']; ?>)">Reject</button>
+                    <button id="confirmBtn" class="btn btn-success" onclick="confirmPet('<?php echo $row['ad_id']; ?>', '<?php echo $row['image_url']; ?>', '<?php echo $name; ?>', '<?php echo $pet_name; ?>', '<?php echo $breed; ?>', '<?php echo $gender; ?>', '<?php echo $pet_category; ?>', '<?php echo $color; ?>', '<?php echo $age; ?>', '<?php echo $age_type; ?>', '<?php echo $size; ?>', '<?php echo $vaccinated; ?>', '<?php echo $neutured; ?>', '<?php echo $weight; ?>')">Confirm</button>
+
+                    <button class="btn btn-secondary" onclick="archivePet(<?php echo $row['ad_id']; ?>)">Archive</button>
                 </div>
             </div>
         </div>
@@ -139,6 +142,22 @@ if (mysqli_num_rows($result) > 0) {
 
 <!-- Script for confirming and rejecting pets -->
 <script>
+function archivePet(id) {
+  if (confirm("Are you sure you want to archive this pet?")) {
+    $.ajax({
+      type: "POST",
+      url: "archive_pet.php",
+      data: { id: id },
+      success: function(response) {
+        // Refresh the page or update the table as needed
+        location.reload();
+      },
+      error: function(xhr, status, error) {
+        console.error(xhr.responseText);
+      }
+    });
+  }
+}
     function confirmPet(adId, image_url, name, petName, breed, gender, pet_category, color, age, age_type, size, vaccinated, neutured, weight) {
         var confirmationData = {
             ad_id: adId,
@@ -167,11 +186,29 @@ if (mysqli_num_rows($result) > 0) {
                 if (response.success) {
                     console.log("Ad confirmed with ID: " + adId);
                     alert("Ad confirmed successfully!");
+
                     // Remove the card from the DOM
                     var cardToRemove = document.querySelector("[data-ad-id='" + adId + "']");
                     if (cardToRemove) {
                         cardToRemove.parentNode.removeChild(cardToRemove);
                     }
+
+                    // After confirmation, delete the ad from the database
+                    $.ajax({
+                        url: '../delete_ad.php?ad_id=' + adId, // Send ad_id as GET parameter
+                        method: 'GET', // Change method to GET
+                        dataType: 'json',
+                        success: function (deleteResponse) {
+                            if (deleteResponse.success) {
+                                console.log("Ad deleted from the database with ID: " + adId);
+                            } else {
+                                console.error("Error deleting ad from the database:", deleteResponse.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error deleting ad from the database:", error);
+                        }
+                    });
                 } else {
                     console.error("Error confirming ad:", response.message);
                     alert("Error confirming ad: " + response.message);
@@ -183,6 +220,7 @@ if (mysqli_num_rows($result) > 0) {
             }
         });
     }
+
     function rejectPet(adId) {
         // Redirect to archive.php with the ad ID as a parameter
         window.location.href = 'archive.php?ad_id=' + adId;
@@ -214,7 +252,6 @@ if (mysqli_num_rows($result) > 0) {
         document.getElementById("popup").style.display = "none";
     }
 
-    // Other existing code...
 </script>
 
 
