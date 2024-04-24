@@ -1,0 +1,29 @@
+/* About Us section styles */
+    .about-us-container {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-us-container h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+    .about-us-container p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #666666;
+        margin-bottom: 15px;
+    }
+
+    /* Hover effect */
+    .about-us-container:hover {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
