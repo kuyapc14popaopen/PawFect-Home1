@@ -1,6 +1,6 @@
 <?php
-    session_start();
-    require 'connection.php';
+session_start();
+require 'connection.php';
 ?>
 
 <html>
@@ -8,93 +8,70 @@
     <title></title>
     <link rel="shortcut icon" href="img/Bulldog.jpeg" />
     <?php include 'dependencies.php'; ?>
-<style>
-    /* CSS for the popup */
-    /* Popup container */
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    }
+    <style>
+        /* CSS for the popup */
+        /* Popup container */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 50%;
+            top: 150px; /* Adjust this value to move the modal lower */
+            transform: translate(-50%, 0); /* Center horizontally */
+            width: 80%; /* Adjust the width if needed */
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+        }
 
-    /* Modal content */
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 5px;
-        position: relative;
-    }
+        /* Modal content */
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 5px;
+        }
 
-    /* Close button */
-    .close {
-        position: absolute;
-        right: 10px;
-        top: 5px;
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
+        /* Close button */
+        .close {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    /* Adopt Button */
-    .card .adopt_btn
-    {
-        height: 40px;
-    text-align: center;
-        margin-bottom: 7px; /* Add margin-bottom */
-    }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-    .card .adopt_btn button
-    {
-     background-color: rgb(249, 190, 79);
-    text-decoration: none;
-    padding: 5px 10px;
-    color:whitesmoke;
-    font-size: 17px;
-    border-radius: 355px 45px 225px 75px/15px 225px 15px 255px;
-    transition: 1s;
-    }
+        /* Adopt Button */
+        .card .adopt_btn,
+        .adopt_btn {
+            text-align: center;
+        }
 
-    .card .adopt_btn button:hover
-    {
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
-    }
-    /* Adopt Button in Modal */
-.modal-adopt-btn {
-    background-color: rgb(249, 190, 79);
-    text-decoration: none;
-    padding: 5px 10px;
-    color: whitesmoke;
-    font-size: 17px;
-    border-radius: 355px 45px 225px 75px/15px 225px 15px 255px;
-    transition: 1s;
-}
+        .card .adopt_btn button,
+        .adopt_btn button {
+            background-color: rgb(249, 190, 79);
+            text-decoration: none;
+            padding: 5px 10px;
+            color: whitesmoke;
+            font-size: 17px;
+            border-radius: 355px 45px 225px 75px/15px 225px 15px 255px;
+            transition: 1s;
+        }
 
-.modal-adopt-btn:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
-}
-
-
-</style>
+        .card .adopt_btn button:hover,
+        .adopt_btn button:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+    </style>
 </head>
 <body>
 <?php include 'header.php'; ?>
@@ -107,10 +84,9 @@
 </div>
 
 <?php
-$query = "SELECT confirmed_ad_info.ad_id, confirmed_ad_info.name, confirmed_ad_info.pet_name, confirmed_ad_info.pet_category, confirmed_ad_info.breed, confirmed_ad_info.color, confirmed_ad_info.gender, confirmed_ad_info.age, confirmed_ad_info.age_type, confirmed_ad_info.size, confirmed_ad_info.vaccinated, confirmed_ad_info.neutured, confirmed_ad_info.weight, confirmed_ad_info.city_village, confirmed_ad_info.district, confirmed_ad_info.state, confirmed_ad_info.description, confirmed_ad_info.about_pet, confirmed_ad_info.adoption_rules, confirmed_ad_info.available, confirmed_ad_info.image_url, users.profile_img_url
+$query = "SELECT confirmed_ad_info.ad_id, confirmed_ad_info.name, confirmed_ad_info.pet_name, confirmed_ad_info.pet_category, confirmed_ad_info.breed, confirmed_ad_info.color, confirmed_ad_info.gender, confirmed_ad_info.age, confirmed_ad_info.age_type, confirmed_ad_info.size, confirmed_ad_info.vaccinated, confirmed_ad_info.neutured, confirmed_ad_info.weight, confirmed_ad_info.city_village, confirmed_ad_info.district, confirmed_ad_info.state, confirmed_ad_info.description, confirmed_ad_info.about_pet, confirmed_ad_info.adoption_rules, confirmed_ad_info.available, confirmed_ad_info.image_url
           FROM confirmed_ad_info
-          LEFT JOIN confirmed_ad_images ON confirmed_ad_info.ad_id = confirmed_ad_images.ad_id
-          LEFT JOIN users ON confirmed_ad_info.user_id = users.id";
+          LEFT JOIN confirmed_ad_images ON confirmed_ad_info.ad_id = confirmed_ad_images.ad_id";
 $result = mysqli_query($conn, $query);
 
 if (mysqli_num_rows($result) > 0) {
@@ -136,17 +112,15 @@ if (mysqli_num_rows($result) > 0) {
         $adoption_rules = $row['adoption_rules'] ? $row['adoption_rules'] : "No information available";
         $available = $row['available'] === '1' ? "Available" : "Not Available";
         $image_url = $row['image_url'];
-        $profile_img_url = $row['profile_img_url'] ? $row['profile_img_url'] : 'profile_img/default.jpg';
-?>
+        ?>
         <div class="col-sm-6 col-md-4 col-lg-3 column">
             <div class="card">
                 <img src="uploads/<?php echo $row['image_url']; ?>" class="img-responsive" alt="Pet Image">
-                <img src="<?php echo $profile_img_url; ?>" alt="Profile Image" class="profile-image">
                 <div class="name_favorite_align">
                     <h6 class="" style="font-size: 20px;"><?php echo $name; ?></h6>
                     <div>
                         <p style="color: #ed2ccb; padding-right: 8px; font-size: 24px;text-align: center; margin: 0;"><?php echo $pet_name; ?></p>
-                        <span class="material-icons favorites noselect"  onclick="favorite_toggle(this)">favorite_border</span>
+                        <span class="material-icons favorites noselect" onclick="favorite_toggle(this)">favorite_border</span>
                     </div>
                 </div>
                 <div class="pet_info">
@@ -157,138 +131,111 @@ if (mysqli_num_rows($result) > 0) {
 
                 <!-- Add Adopt button here -->
                 <div class="adopt_btn">
-                    <button onclick="adoptPet(<?php echo $ad_id; ?>, '<?php echo $name; ?>', '<?php echo $pet_name; ?>', '<?php echo $pet_category; ?>', '<?php echo $breed; ?>', '<?php echo $color; ?>', '<?php echo $gender; ?>', '<?php echo $age; ?>', '<?php echo $age_type; ?>', '<?php echo $size; ?>', '<?php echo $vaccinated; ?>', '<?php echo $neutured; ?>', '<?php echo $weight; ?>', '<?php echo $city_village; ?>', '<?php echo $district; ?>', '<?php echo $state; ?>', '<?php echo $description; ?>', '<?php echo $about_pet; ?>', '<?php echo $adoption_rules; ?>', '<?php echo $available; ?>', '<?php echo $profile_img_url; ?>')">Adopt</button>
+                    <button onclick="showMoreInfo(<?php echo $ad_id; ?>, '<?php echo $pet_name; ?>', '<?php echo $pet_category; ?>', '<?php echo $breed; ?>', '<?php echo $color; ?>', '<?php echo $gender; ?>', '<?php echo $age; ?>', '<?php echo $age_type; ?>', '<?php echo $size; ?>', '<?php echo $vaccinated; ?>', '<?php echo $neutured; ?>', '<?php echo $weight; ?>', '<?php echo $city_village; ?>', '<?php echo $district; ?>', '<?php echo $state; ?>', '<?php echo $description; ?>', '<?php echo $about_pet; ?>', '<?php echo $adoption_rules; ?>', '<?php echo $available; ?>')" class="adopt_button_modal">Adopt</button>
                 </div>
-                <!-- End of Adopt button -->
-
             </div>
         </div>
-<?php
+        <?php
     }
-} else {
-    echo "No ads found.";
 }
 ?>
 
-<?php include 'post-ad-part-1.php';?>
-
-<!-- Popup to display more info -->
-<div id="popup" class="modal">
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
     <div class="modal-content">
-        <span class="close" onclick="closePopup()">&times;</span>
-        <div id="popupContent">
-            <!-- Content will be filled dynamically -->
+        <span class="close">&times;</span>
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal-title">Adoption Information</h5>
         </div>
-        <!-- Add Adopt button inside the modal -->
-        <div class="adopt_btn" style="text-align: center;">
-            
-           <a href="displayChats.php?name=<?php echo urlencode($name); ?>&profile_img_url=<?php echo urlencode($profile_img_url); ?>"><button id="adoptButton" class="modal-adopt-btn" onclick="adoptPetInModal()">Adopt</button></a>
+        <div class="modal-body">
+            <div id="more_info_content"></div>
+            <div class="modal-footer">
+                <button type="button" id="adoptButtonInModal" class="btn btn-success">Adopt</button>
+            </div>
         </div>
-        <!-- End of Adopt button -->
     </div>
 </div>
 
 <script>
-    // Function to show the popup with more info
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
     function showMoreInfo(ad_id, pet_name, pet_category, breed, color, gender, age, age_type, size, vaccinated, neutured, weight, city_village, district, state, description, about_pet, adoption_rules, available) {
-        var popupContent = `
-            <h2>${pet_name}</h2>
-            <p>Category: ${pet_category}</p>
+        var modalTitle = document.getElementById("modal-title");
+        modalTitle.innerHTML = pet_name;
+
+        var moreInfoContent = document.getElementById("more_info_content");
+        moreInfoContent.innerHTML = `
+            <p>Pet Category: ${pet_category}</p>
             <p>Breed: ${breed}</p>
             <p>Color: ${color}</p>
             <p>Gender: ${gender}</p>
             <p>Age: ${age} ${age_type}</p>
             <p>Size: ${size}</p>
             <p>Vaccinated: ${vaccinated}</p>
-            <p>Neutered/Spayed: ${neutured}</p>
+            <p>Neutured: ${neutured}</p>
             <p>Weight: ${weight}</p>
             <p>Location: ${city_village}, ${district}, ${state}</p>
             <p>Description: ${description}</p>
             <p>About Pet: ${about_pet}</p>
             <p>Adoption Rules: ${adoption_rules}</p>
-            <p>Status: ${available}</p>
+            <p>Availability: ${available}</p>
         `;
-        document.getElementById("popupContent").innerHTML = popupContent;
-        document.getElementById("popup").style.display = "block";
+
+        // Set the ad_id as data attribute to the adopt button in the modal
+        var adoptButton = document.getElementById("adoptButtonInModal");
+        adoptButton.setAttribute("data-ad-id", ad_id);
+
+        // Show the modal
+        modal.style.display = "block";
     }
 
-    // Function to close the popup
-    function closePopup() {
-        document.getElementById("popup").style.display = "none";
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
     }
 
-// Function to handle pet adoption in the modal
-function adoptPetInModal() {
-    // Display confirmation dialog
-    if (confirm("Are you sure you want to adopt this pet?")) {
-        // If user confirms, perform adoption actions
-        console.log("Pet adoption confirmed");
-        // Redirect to chat/index.php
-        window.location.href = "displayChats.php";
-        // Close the modal after redirection
-        closePopup();
-    } else {
-        // If user cancels, do nothing
-        console.log("Pet adoption canceled");
-    }
-}
-
-
-    // Function to handle pet adoption
-    function adoptPet(ad_id, name, pet_name, pet_category, breed, color, gender, age, age_type, size, vaccinated, neutured, weight, city_village, district, state, description, about_pet, adoption_rules, available, profile_img_url) {
-        // You can perform actions here, such as marking the pet as adopted
-        // For now, let's just log the ID to the console
-        console.log("Adopting pet with ID: " + ad_id);
-        // Show more info in the popup
-        showMoreInfo(ad_id, pet_name, pet_category, breed, color, gender, age, age_type, size, vaccinated, neutured, weight, city_village, district, state, description, about_pet, adoption_rules, available);
-        // Pass profile image URL to the modal in case of adoption
-        document.getElementById("adoptButton").setAttribute("href", "displayChats.php?name=" + encodeURIComponent(name) + "&profile_img_url=" + encodeURIComponent(profile_img_url));
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
 
-    $(document).ready(function() {
-        fetchAds(); // Call this function when the page loads
-    });
+    // Function to handle adoption button click
+    var adoptButton = document.getElementById("adoptButtonInModal");
+    adoptButton.onclick = function() {
+        var ad_id = this.getAttribute("data-ad-id");
+        adoptPet(ad_id);
+    }
 
-    var start = 0;
-    var processing = false;
-
-    function fetchAds() {
-        const formData = new FormData();
-        formData.append('start', start);
-        $.ajax({
-            url: 'retriveAds.php',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function() {
-                processing = true;
-               
-            },
-            success: function(response) {
-                processing = false;
-                $('#loader').remove();
-                $('.display_ads').append(response);
-                start += 4;
+    // Function to handle adoption process
+    function adoptPet(ad_id) {
+        // Send the adoption request to the server
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    alert(xhr.responseText); // Display success message
+                    modal.style.display = "none"; // Close the modal
+                } else {
+                    alert("Failed to send adoption request. Please try again."); // Display error message
+                }
             }
-        });
-    }
-
-    $(window).scroll(function() {
-        if ($(window).scrollTop() + $(window).height() > $('.display_ads').height() && !processing) {
-            fetchAds();
-        }
-    });
-
-    function favorite_toggle(ele) {
-        var fav = $(ele);
-        if (fav.text() == "favorite_border") {
-            fav.text("favorite");
-        } else {
-            fav.text("favorite_border");
-        }
+        };
+        xhr.open("POST", "process_adoption.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send("ad_id=" + ad_id);
     }
 </script>
-<?php include 'post-ad-part-2.php';?>
+
 </body>
 </html>
