@@ -31,9 +31,9 @@
                                 <p class="confirm-pass-invalid" style="text-align: center; color: red;"></p>
                             </div>
                             
-                            <div class="form-group"> 
-                                <input type="tel" class="form-control" name="contact" placeholder="Contact" required="true" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" oninvalid="this.setCustomValidity('Enter valid format eg. 9876543210')" oninput="this.setCustomValidity('')">
-                            </div>
+                               <div class="form-group">
+    <input type="tel" class="form-control" name="contact" placeholder="Contact Number" title="eg.09171234567 or +639171234567"required="true" pattern="((\+[0-9]{2})|0)[.\- ]?9[0-9]{2}[.\- ]?[0-9]{3}[.\- ]?[0-9]{4}">
+</div>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="city" placeholder="City" required="true">
                             </div>
