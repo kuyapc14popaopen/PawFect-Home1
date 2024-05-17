@@ -23,9 +23,9 @@
                             <div class="form-group">
                                 <input type="email" class="form-control" name="email" placeholder="Email" required="true" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
                             </div> 
-                            <div class="form-group">
-                                <input type="password" class="form-control pass" name="password" placeholder="Password (min. 8 characters)" required="true" pattern=".{6,}">
-                            </div>
+                           <div class="form-group">
+    <input type="password" class="form-control pass" name="password" placeholder="Password (8-16 characters, at least one uppercase, lowercase, digit, and special character)" required="true" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,16}$">
+</div>
                             
                              <div class="form-group">
                                 <input type="password" class="form-control confirm-pass" name="password" placeholder="Confirm Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" oninvalid="this.setCustomValidity('Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters')" oninput="this.setCustomValidity('')"  required>
