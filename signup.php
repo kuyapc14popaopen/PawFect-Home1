@@ -17,9 +17,8 @@
                         <div class="panel-body">
                             <p class="signup_fail" style="text-align: center; color: red;"></p>
                             <form id="signUpForm" method="post" >
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="name" placeholder="Name" required="true">
-                            </div>
+                             <div class="form-group">
+    <input type="text" class="form-control" name="name" placeholder="Name (letters only, minimum 2 letters)" required="true" pattern="[A-Za-z]{2,}" title="Please enter letters only (minimum 2 letters)">
                             <div class="form-group">
                                 <input type="email" class="form-control" name="email" placeholder="Email" required="true" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
                             </div> 
