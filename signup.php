@@ -34,12 +34,46 @@
                                <div class="form-group">
     <input type="tel" class="form-control" name="contact" placeholder="Contact Number" title="eg.09171234567 or +639171234567"required="true" pattern="((\+[0-9]{2})|0)[.\- ]?9[0-9]{2}[.\- ]?[0-9]{3}[.\- ]?[0-9]{4}">
 </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="city" placeholder="City" required="true">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="state" placeholder="State" required="true">
-                            </div>
+                          
+                   <div class="form-group">
+    <label for="city">City</label>
+    <select class="form-control" name="city" id="city" required="true">
+        <option value="" selected disabled>Choose a city</option>
+        <option value="Aliaga">Aliaga</option>
+        <option value="Bongabon">Bongabon</option>
+        <option value="Cabanatuan">Cabanatuan</option>
+        <option value="Cabiao">Cabiao</option>
+        <option value="Carranglan">Carranglan</option>
+        <option value="Cuyapo">Cuyapo</option>
+        <option value="Gabaldon">Gabaldon</option>
+        <option value="Gapan">Gapan</option>
+        <option value="General Mamerto Natividad">General Mamerto Natividad</option>
+        <option value="General Tinio">General Tinio</option>
+        <option value="Guimba">Guimba</option>
+        <option value="Jaen">Jaen</option>
+        <option value="Laur">Laur</option>
+        <option value="Licab">Licab</option>
+        <option value="Llanera">Llanera</option>
+        <option value="Lupao">Lupao</option>
+        <option value="Nampicuan">Nampicuan</option>
+        <option value="Palayan">Palayan</option>
+        <option value="Pantabangan">Pantabangan</option>
+        <option value="Penaranda">Penaranda</option>
+        <option value="Quezon (NE)">Quezon (NE)</option>
+        <option value="Rizal (NE)">Rizal (NE)</option>
+        <option value="San Antonio (NE)">San Antonio (NE)</option>
+        <option value="San Isidro (NE)">San Isidro (NE)</option>
+        <option value="San Jose (NE)">San Jose (NE)</option>
+        <option value="San Leonardo">San Leonardo</option>
+        <option value="Santa Rosa (NE)">Santa Rosa (NE)</option>
+        <option value="Santo Domingo (NE)">Santo Domingo (NE)</option>
+        <option value="Science City of Munoz">Science City of Munoz</option>
+        <option value="Talavera">Talavera</option>
+        <option value="Talugtug">Talugtug</option>
+        <option value="Zaragoza">Zaragoza</option>
+    </select>
+</div>
+                            
                                         <div class="form-group center">
                         <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter OTP" required="true">
                         <button type="button" class="btn btn-default" id="sendOtp">Send OTP</button>
