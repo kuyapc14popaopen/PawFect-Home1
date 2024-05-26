@@ -1,15 +1,31 @@
 <?php 
 session_start();
-require 'connection.php';       
+require 'connection.php';
+
+// Check if the user is logged in
+if (!isset($_SESSION['id'])) {
+    // User is not logged in, redirect to login page
+    header('Location: login.php');
+    exit;
+}
+
+// Retrieve user ID from the session
+$user_id = $_SESSION['id'];
+
+// Retrieve user name from the session
+$user_name = $_SESSION['name'];
 ?>
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Your Title Here</title>
     <?php include 'dependencies.php'; ?>
     <?php require 'header.php'; ?> 
     <style>
-        html,body {
+                html,body {
             background: #efefef;
             font-family: "Arial";
         }
@@ -601,7 +617,6 @@ require 'connection.php';
     color: white;
     border: none;
 }
-
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
@@ -611,10 +626,99 @@ require 'connection.php';
             $(".nav li").click(function(){
                 $(this).addClass('active').siblings().removeClass('active');
             })
-        })
+        });
+
+        function displayEditField() {
+            var form = document.getElementById("update_details_form");
+            if (form.style.display === "none") {
+                form.style.display = "block";
+                document.querySelector(".follow").textContent = 'Hide Edit Fields';
+            } else {
+                form.style.display = "none";
+                document.querySelector(".follow").textContent = 'Edit Info.';
+            }
+        }
+
+        document.getElementById("update_details_form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", form.action);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert("Details Updated Successfully");
+                    location.reload();
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+
+        document.getElementById("update_password").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+            if (formData.get("newpass") !== formData.get("confpass")) {
+                alert("Passwords do not match");
+                return;
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "update_password.php");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert("Password Changed Successfully");
+                    form.reset();
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+
+        function confirmAdopt(adId, event) {
+            event.preventDefault();
+            if (confirm("Are you sure you want to confirm adoption?")) {
+                // Perform action to confirm adoption
+            }
+        }
+
+        function deleteAd(adId) {
+            if (confirm("Are you sure you want to delete this ad?")) {
+                // Perform action to delete ad
+            }
+        }
+
+        function confirmAdopt(adId) {
+            var parentDiv = event.target.closest('.col-md-4');
+            var imageUrl = parentDiv.querySelector('img').src;
+
+            var data = {
+                adId: adId,
+                imageUrl: imageUrl
+                // Add more data fields as needed
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "adoption_success.php",
+                data: data,
+                success: function(response) {
+                    // Handle success response
+                    console.log("Adoption success: ", response);
+                    alert("Adoption completed successfully");
+                    // Optionally, you can reload the page or perform other actions
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error("Error: ", error);
+                    alert("Error confirming adoption: " + error);
+                }
+            });
+        }
     </script>
 </head>
-   
 <body>
 <?php
 $query = "SELECT * FROM users where id='".$_SESSION['id']."'";
@@ -665,38 +769,77 @@ while($rows=mysqli_fetch_array($result)) {
             </div>
             <div class="right col-lg-8">
                 <ul class="nav">
-                    <li>Advertisement Posts</li>
+                    
                 </ul>
                 <span class="follow" onclick="displayEditField()">Edit Info.</span>
                 <div class="row gallery">
-                    <?php 
-                    $query = "SELECT * FROM ad_info where user_id=" . $_SESSION['id']; 
-                    $result = mysqli_query($conn, $query);
-                    $isAdsAvailable = false;
-                    
-                    while ($ad_rows = mysqli_fetch_array($result)) {
-                        $isAdsAvailable = true;
-                        $query_image = "SELECT image_url FROM ad_images where ad_id='" . $ad_rows['ad_id'] . "' LIMIT 1";
-                        $result_image = mysqli_query($conn, $query_image);
-                        $image_url = mysqli_fetch_assoc($result_image)['image_url'];
-                    ?>
-                    <div class="col-md-4">
-                        <img src="uploads/<?php echo $image_url; ?>" alt="Ad Image">
-                        <div class="delete_button_wrapper">
-                            <button class="confirm_button" onclick="confirmAdopt('<?php echo $ad_rows['ad_id'];?>', event)">Confirm Adopt</button>
-                            <button class="delete_button" onclick="deleteAd('<?php echo $ad_rows['ad_id'];?>')">Delete Ad</button>
-                        </div>
+<?php
+$query = "SELECT confirmed_ad_info.ad_id, confirmed_ad_info.name as uploader_name, confirmed_ad_info.pet_name, confirmed_ad_info.pet_category, confirmed_ad_info.breed, confirmed_ad_info.color, confirmed_ad_info.gender, confirmed_ad_info.age, confirmed_ad_info.age_type, confirmed_ad_info.size, confirmed_ad_info.vaccinated, confirmed_ad_info.neutured, confirmed_ad_info.weight, confirmed_ad_info.city_village, confirmed_ad_info.district, confirmed_ad_info.state, confirmed_ad_info.description, confirmed_ad_info.about_pet, confirmed_ad_info.adoption_rules, confirmed_ad_info.available, confirmed_ad_info.image_url
+          FROM confirmed_ad_info
+          INNER JOIN users ON confirmed_ad_info.name = users.name
+          WHERE users.id = '$user_id'";
+
+
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $ad_id = $row['ad_id'];
+        $uploader_name = $row['uploader_name'];
+        $pet_name = $row['pet_name'] === 'unknown' ? "Unknown" : $row['pet_name'];
+        $pet_category = $row['pet_category'];
+        $breed = $row['breed'] === '-1' ? "Unknown" : $row['breed'];
+        $color = $row['color'] ? $row['color'] : "Unknown";
+        $gender = $row['gender'] === '-1' ? "Male" : ($row['gender'] === '1' ? "Female" : "Unknown");
+        $age = $row['age'] === '0' ? "Unknown" : $row['age'];
+        $age_type = $row['age_type'];
+        $size = $row['size'] === '0' ? "Unknown" : ($row['size'] === '1' ? "Small" : ($row['size'] === '2' ? "Medium" : "Large"));
+        $vaccinated = $row['vaccinated'] === '1' ? "Yes" : "No";
+        $neutured = $row['neutured'] === '1' ? "Yes" : "No";
+        $weight = $row['weight'] === '-1' ? "Unknown" : $row['weight'];
+        $city_village = $row['city_village'];
+        $district = $row['district'];
+        $state = $row['state'];
+        $description = $row['description'] ? $row['description'] : "No description available";
+        $about_pet = $row['about_pet'] ? $row['about_pet'] : "No information available";
+        $adoption_rules = $row['adoption_rules'] ? $row['adoption_rules'] : "No information available";
+        $available = $row['available'] === '1' ? "Available" : "Not Available";
+        $image_url = $row['image_url'];
+?>
+        <div class="col-sm-6 col-md-4 col-lg-3 column">
+            <div class="card">
+                <img src="uploads/<?php echo $row['image_url']; ?>" class="img-responsive" alt="Pet Image">
+                <div class="name_favorite_align">
+                    <h6 class="" style="font-size: 18px;"><?php echo $uploader_name; ?></h6>
+                    <div>
+                        <p style="color: #ed2ccb; padding-right: 8px; font-size: 22px;text-align: center; margin: 0;"><?php echo $pet_name; ?></p>
                     </div>
-                    <?php } ?>
                 </div>
-                <?php if(!$isAdsAvailable) { ?>
-                <div class="message">
-                    <p>Nothing to show yet. Post some ads.</p>
+<div class="pet_info">
+    <p style="font-size: 15px;">Breed: <?php echo $breed; ?></p>
+    <p style="font-size: 15px;">Age: <?php echo $age; ?></p>
+    <p style="font-size: 15px;">Gender: <?php echo $gender; ?></p>
+    <button class="confirm_button" onclick="confirmAdopt('<?php echo $ad_id; ?>', event)">Confirm Adopt</button>
+
+</div>
+
+
+                
+            </div>
+        </div>
+<?php
+    }
+} else {
+    echo "No posts found.";
+}
+?>
+
+
                 </div>
-                <?php } ?>
             </div>
         </div>
     </main>
+
 </div>
 <?php } ?>
 <script>
@@ -749,49 +892,46 @@ while($rows=mysqli_fetch_array($result)) {
         xhr.send(formData);
     });
 
-    function confirmAdopt(adId, event) {
-        event.preventDefault();
-        if (confirm("Are you sure you want to confirm adoption?")) {
-            // Perform action to confirm adoption
-        }
-    }
 
-    function deleteAd(adId) {
-        if (confirm("Are you sure you want to delete this ad?")) {
-            // Perform action to delete ad
-        }
-    }
 
     function update_profile_img() {
         // Function to update profile image
     }
-    function confirmAdopt(adId) {
-    var parentDiv = event.target.closest('.col-md-4');
-    var imageUrl = parentDiv.querySelector('img').src;
-
-    var data = {
-        adId: adId,
-        imageUrl: imageUrl
-        // Add more data fields as needed
-    };
-
-    $.ajax({
-        type: "POST",
-        url: "adoption_success.php",
-        data: data,
-        success: function(response) {
-            // Handle success response
-            console.log("Adoption success: ", response);
-            alert("Adoption completed successfully");
-            // Optionally, you can reload the page or perform other actions
-        },
-        error: function(xhr, status, error) {
-            // Handle error
-            console.error("Error: ", error);
-            alert("Error confirming adoption: " + error);
-        }
-    });
+function confirmAdopt(adId, event) {
+    event.preventDefault();
+    if (confirm("Are you sure you want to confirm adoption?")) {
+        // Perform action to confirm adoption
+    }
 }
+// Function to confirm adoption
+function confirmAdopt(adId, event) {
+    event.preventDefault();
+    console.log("Confirming adoption for ad ID:", adId); // Log to console for debugging
+    if (confirm("Are you sure you want to confirm adoption?")) {
+        // Perform action to confirm adoption
+        $.ajax({
+            type: "POST",
+            url: "adoption_success.php",
+            data: { adId: adId },
+            success: function(response) {
+                // Handle success response
+                console.log("Adoption success response: ", response);
+                if (response.includes("Adoption confirmed successfully")) {
+                    alert("Adoption completed successfully");
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert("Error confirming adoption: " + response);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+                console.error("Error: ", error);
+                alert("Error confirming adoption: " + error);
+            }
+        });
+    }
+}
+
 </script>
 </body>
 </html>
