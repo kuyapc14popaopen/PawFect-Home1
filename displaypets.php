@@ -5,7 +5,7 @@ require 'connection.php';
 
 <html>
 <head>
-    <title></title>
+    <title>Display Pets</title>
     <link rel="shortcut icon" href="img/Bulldog.jpeg" />
     <?php include 'dependencies.php'; ?>
     <style>
@@ -84,7 +84,7 @@ require 'connection.php';
 </div>
 
 <?php
-$query = "SELECT confirmed_ad_info.ad_id, confirmed_ad_info.name, confirmed_ad_info.pet_name, confirmed_ad_info.pet_category, confirmed_ad_info.breed, confirmed_ad_info.color, confirmed_ad_info.gender, confirmed_ad_info.age, confirmed_ad_info.age_type, confirmed_ad_info.size, confirmed_ad_info.vaccinated, confirmed_ad_info.neutured, confirmed_ad_info.weight, confirmed_ad_info.city_village, confirmed_ad_info.district, confirmed_ad_info.state, confirmed_ad_info.description, confirmed_ad_info.about_pet, confirmed_ad_info.adoption_rules, confirmed_ad_info.available, confirmed_ad_info.image_url
+$query = "SELECT confirmed_ad_info.ad_id, confirmed_ad_info.name as uploader_name, confirmed_ad_info.pet_name, confirmed_ad_info.pet_category, confirmed_ad_info.breed, confirmed_ad_info.color, confirmed_ad_info.gender, confirmed_ad_info.age, confirmed_ad_info.age_type, confirmed_ad_info.size, confirmed_ad_info.vaccinated, confirmed_ad_info.neutured, confirmed_ad_info.weight, confirmed_ad_info.city_village, confirmed_ad_info.district, confirmed_ad_info.state, confirmed_ad_info.description, confirmed_ad_info.about_pet, confirmed_ad_info.adoption_rules, confirmed_ad_info.available, confirmed_ad_info.image_url
           FROM confirmed_ad_info
           LEFT JOIN confirmed_ad_images ON confirmed_ad_info.ad_id = confirmed_ad_images.ad_id";
 $result = mysqli_query($conn, $query);
@@ -92,7 +92,7 @@ $result = mysqli_query($conn, $query);
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         $ad_id = $row['ad_id'];
-        $name = $row['name'];
+        $uploader_name = $row['uploader_name'];
         $pet_name = $row['pet_name'] === 'unknown' ? "Unknown" : $row['pet_name'];
         $pet_category = $row['pet_category'];
         $breed = $row['breed'] === '-1' ? "Unknown" : $row['breed'];
@@ -117,7 +117,7 @@ if (mysqli_num_rows($result) > 0) {
             <div class="card">
                 <img src="uploads/<?php echo $row['image_url']; ?>" class="img-responsive" alt="Pet Image">
                 <div class="name_favorite_align">
-                    <h6 class="" style="font-size: 20px;"><?php echo $name; ?></h6>
+                    <h6 class="" style="font-size: 20px;"><?php echo $uploader_name; ?></h6>
                     <div>
                         <p style="color: #ed2ccb; padding-right: 8px; font-size: 24px;text-align: center; margin: 0;"><?php echo $pet_name; ?></p>
                         <span class="material-icons favorites noselect" onclick="favorite_toggle(this)">favorite_border</span>
@@ -131,7 +131,7 @@ if (mysqli_num_rows($result) > 0) {
 
                 <!-- Add Adopt button here -->
                 <div class="adopt_btn">
-                    <button onclick="showMoreInfo(<?php echo $ad_id; ?>, '<?php echo $pet_name; ?>', '<?php echo $pet_category; ?>', '<?php echo $breed; ?>', '<?php echo $color; ?>', '<?php echo $gender; ?>', '<?php echo $age; ?>', '<?php echo $age_type; ?>', '<?php echo $size; ?>', '<?php echo $vaccinated; ?>', '<?php echo $neutured; ?>', '<?php echo $weight; ?>', '<?php echo $city_village; ?>', '<?php echo $district; ?>', '<?php echo $state; ?>', '<?php echo $description; ?>', '<?php echo $about_pet; ?>', '<?php echo $adoption_rules; ?>', '<?php echo $available; ?>')" class="adopt_button_modal">Adopt</button>
+                    <button onclick="showMoreInfo(<?php echo $ad_id; ?>, '<?php echo $pet_name; ?>', '<?php echo $uploader_name; ?>', '<?php echo $pet_category; ?>', '<?php echo $breed; ?>', '<?php echo $color; ?>', '<?php echo $gender; ?>', '<?php echo $age; ?>', '<?php echo $age_type; ?>', '<?php echo $size; ?>', '<?php echo $vaccinated; ?>', '<?php echo $neutured; ?>', '<?php echo $weight; ?>', '<?php echo $city_village; ?>', '<?php echo $district; ?>', '<?php echo $state; ?>', '<?php echo $description; ?>', '<?php echo $about_pet; ?>', '<?php echo $adoption_rules; ?>', '<?php echo $available; ?>')" class="adopt_button_modal">Adopt</button>
                 </div>
             </div>
         </div>
@@ -161,19 +161,17 @@ if (mysqli_num_rows($result) > 0) {
     // Get the modal
     var modal = document.getElementById("myModal");
 
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
     // When the user clicks on the button, open the modal
-    function showMoreInfo(ad_id, pet_name, pet_category, breed, color, gender, age, age_type, size, vaccinated, neutured, weight, city_village, district, state, description, about_pet, adoption_rules, available) {
+    function showMoreInfo(ad_id, pet_name, uploader_name, pet_category, breed, color, gender, age, age_type, size, vaccinated, neutured, weight, city_village, district, state, description, about_pet, adoption_rules, available) {
         var modalTitle = document.getElementById("modal-title");
         modalTitle.innerHTML = pet_name;
 
         var moreInfoContent = document.getElementById("more_info_content");
         moreInfoContent.innerHTML = `
+            <p>Uploader Name: ${uploader_name}</p>
             <p>Pet Category: ${pet_category}</p>
             <p>Breed: ${breed}</p>
             <p>Color: ${color}</p>
@@ -193,6 +191,7 @@ if (mysqli_num_rows($result) > 0) {
         // Set the ad_id as data attribute to the adopt button in the modal
         var adoptButton = document.getElementById("adoptButtonInModal");
         adoptButton.setAttribute("data-ad-id", ad_id);
+        adoptButton.setAttribute("data-ad-name", uploader_name); // Add the uploader's name as a data attribute
 
         // Show the modal
         modal.style.display = "block";
@@ -210,32 +209,36 @@ if (mysqli_num_rows($result) > 0) {
         }
     }
 
-    // Function to handle adoption button click
-    var adoptButton = document.getElementById("adoptButtonInModal");
-    adoptButton.onclick = function() {
-        var ad_id = this.getAttribute("data-ad-id");
-        adoptPet(ad_id);
-    }
+// Function to handle adoption button click
+var adoptButton = document.getElementById("adoptButtonInModal");
+console.log("Adopt button:", adoptButton); // Check if the button exists
+adoptButton.onclick = function() {
+    var ad_id = this.getAttribute("data-ad-id");
+    var ad_name = this.getAttribute("data-ad-name"); // Get the name of the uploader
+    console.log("Adoption Button Clicked - ad_id:", ad_id, "ad_name:", ad_name); // Log ad_id and ad_name
 
-    // Function to handle adoption process
-    function adoptPet(ad_id) {
-        // Send the adoption request to the server
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    alert(xhr.responseText); // Display success message
-                    modal.style.display = "none"; // Close the modal
-                } else {
-                    alert("Failed to send adoption request. Please try again."); // Display error message
-                }
+    // Send a request to the server to handle the adoption process
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Request successful, handle response
+            var response = JSON.parse(this.responseText);
+            if (response.success) {
+                // Adoption request sent successfully
+                alert("Adoption request sent successfully!");
+            } else {
+                // Adoption request failed
+                alert("Failed to send adoption request. Please try again later.");
             }
-        };
-        xhr.open("POST", "process_adoption.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.send("ad_id=" + ad_id);
-    }
+        }
+    };
+    xhr.open("POST", "handle_adoption.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send("ad_id=" + ad_id + "&ad_name=" + encodeURIComponent(ad_name));
+};
+
 </script>
 
 </body>
 </html>
+
